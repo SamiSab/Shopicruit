@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){    
+    $("button").click(function(){
+        $(this).hide();
+        var sum = 0;
+        for (var page_num = 1; page_num <= 5; page_num++){
+            $.ajax({
+                url: "http://shopicruit.myshopify.com/products.json",
+                data: {page: page_num},
+                dataType: "json",
+                type: "GET", 
+                success: function(data){
+                    console.log(data);
+                    if (data == ""){
+                        page_exists = false;
+                    }
+                    else {
+                        for (var i = 0; i < data['products'].length; i++){
+                            if (data['products'][i]['product_type'] == "Clock" || data['products'][i]['product_type'] == "Watch"){
+                                for (var j = 0; j < data['products'][i]['variants'].length; j++){
+                                    var price = data['products'][i]['variants'][j]['price'];
+                                    sum += parseFloat(price);
+                                    console.log(price);
+                                    console.log(sum);
+                                }
+                            }
+                        }
+                    }
+                    $('#answer').html('$'+sum.toFixed(2));
+                },
+                error: function(){
+                    alert("Something went wrong while finding the price ;0");
+                }
+            });
+        }
+    });
+});
+</script>
+</head>
+<body>
+
+<h2>You can buy all the shopicruit clocks for...</h2>
+<button>Click me!</button>
+
+<h1 id="answer"></h1>
+
+</body>
+</html>
